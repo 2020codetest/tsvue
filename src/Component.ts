@@ -1,3 +1,4 @@
+import { MyProps } from "./MyComponent";
 import { defineReactive, INotifier } from "./Reactive";
 
 export interface Component{
@@ -44,7 +45,9 @@ export class TextWrapper implements Component{
     }
 
     update(newComp: RenderComponent){
-        (this.node as Text).textContent = (newComp as TextWrapper).content
+        if (this.content !== (newComp as TextWrapper).content){
+            (this.node as Text).textContent = (newComp as TextWrapper).content
+        }
     }
 
     unmount(): void{
@@ -73,22 +76,61 @@ export class ElementWrapper implements Component{
         this.listeners = {}
     }
 
-    updateProps(){
-        if (this.props){
-            for (let prop in this.props){
-                let value = this.props[prop]
-                if (prop === "className"){
-                    (this.node as HTMLElement).setAttribute("class", value)
-                }
-                else if (prop.match(/^on([\s\S]+)/)){
-                    let event = prop.substr(2).toLowerCase()
-                    this.listeners[event] = value
-                    this.node.addEventListener(event, this.listeners[event])
-                    continue;
+    diffProps(oldProps: MyProps, newProps: MyProps){
+        if (!oldProps){
+            this.updateProps(newProps)
+            return;
+        }
+        
+        if (!newProps){
+            // remove all attributes
+            for (let key in oldProps){
+                (this.node as HTMLElement).setAttribute(key, undefined)
+            }
+        }
+        else{
+            for (let prop in oldProps){
+                if (prop in newProps){
+                    let oldValue = oldProps[prop]
+                    let newValue = newProps[prop]
+                    if (oldValue !== newValue){
+                        this.updatePropsInternal(prop, newValue)
+                    }
                 }
                 else{
-                    (this.node as HTMLElement).setAttribute(prop, value)
+                    (this.node as HTMLElement).setAttribute(prop, undefined)
                 }
+            }
+
+            for (let prop in newProps){
+                if (!(prop in oldProps)){
+                    let value = newProps[prop]
+                    this.updatePropsInternal(prop, value)
+                }
+            }
+        }
+    }
+
+    updatePropsInternal(prop: string, value: any){
+        if (prop === "className"){
+            (this.node as HTMLElement).setAttribute("class", value)
+        }
+        else if (prop.match(/^on([\s\S]+)/)){
+            let event = prop.substr(2).toLowerCase()
+            this.listeners[event] = value
+            this.node.addEventListener(event, this.listeners[event])
+        }
+        else{
+            (this.node as HTMLElement).setAttribute(prop, value)
+        }
+
+    }
+
+    updateProps(props: MyProps){
+        if (props){
+            for (let prop in props){
+                let value = props[prop]
+                this.updatePropsInternal(prop, value)
             }
         }
     }
@@ -109,7 +151,8 @@ export class ElementWrapper implements Component{
         }
         else{
             this.releaseEvents()
-            this.updateProps()
+            // check the diff props, no need to add/delete/update attributes
+            this.diffProps(this.props, newComp.props)
             // check children here
             let minLength = Math.min(this.children.length, newComp.children.length)
             for (let inx = 0; inx < minLength; ++inx){
@@ -150,7 +193,7 @@ export class ElementWrapper implements Component{
         }
 
         this.node = node
-        this.updateProps()
+        this.updateProps(this.props)
         for (let child of this.children){
             child.flush(node)
         }
