@@ -1,5 +1,4 @@
-import {MyComponent} from "./MyComponent"
-import { MyVue } from "./MyVue"
+import { App } from "./App"
 import "./style.css"
 
-MyVue.render(<MyComponent />, document.getElementById("root")!)
+new App({}).mount("root")

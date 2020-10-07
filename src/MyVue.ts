@@ -36,7 +36,4 @@ export const MyVue = {
     },
 
     Fragment: "#fragment",
-    render: (comp: Component, parent: Node) => {
-        comp.flush(parent)
-    }
 }

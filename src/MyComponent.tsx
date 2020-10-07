@@ -20,8 +20,8 @@ interface InnerProps{
 
 class InnerComp extends Vue<InnerData, InnerProps> {
     data: InnerData = {cnt: 0}
-    constructor(props: InnerProps, data: InnerData){
-        super(props, data)
+    constructor(props: InnerProps){
+        super(props)
     }
 
     render(): RenderComponent{
@@ -33,8 +33,8 @@ class InnerComp extends Vue<InnerData, InnerProps> {
 
 export class MyComponent extends Vue<MyData, MyProps> {
     data: MyData = {text: "hello", arr: ["cnt1", "cnt2", "cnt3"]}
-    constructor(props: MyProps, data: MyData){
-        super(props, data)
+    constructor(props: MyProps){
+        super(props)
     }
 
     render(): RenderComponent{

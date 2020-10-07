@@ -109,7 +109,7 @@ export class ElementWrapper implements Component{
     }
 }
 
-export class Vue<Data, Props> implements Component, INotifier{
+export class Vue<Data = {}, Props = {}> implements Component, INotifier{
     children: Component[];
     type: string;
     props: Props;
@@ -119,20 +119,18 @@ export class Vue<Data, Props> implements Component, INotifier{
     promiseIssued: boolean;
     watched: boolean;
     renderedComp?: Component;
-    constructor(props: Props, data: Data) {
+    constructor(props: Props) {
         this.children = [];
         this.type = "#custom";
         this.props = props;
-        this.data = data;
         this.promiseIssued = false
         this.watched = false
-        let _this = this
         let render = this.render
         Object.defineProperty(this, "render", {
             get: () => {
                 // add watcher here
                 if (!this.watched){
-                    defineReactive(_this.data, _this)
+                    defineReactive(this.data, this)
                     this.watched = true
                 }
 
@@ -145,6 +143,10 @@ export class Vue<Data, Props> implements Component, INotifier{
         if (this.renderedComp){
             this.renderedComp.unmount()
         }
+    }
+
+    mount(id: string): void {
+        this.flush(document.getElementById(id))
     }
 
     render(): RenderComponent {
