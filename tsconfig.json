@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "ES5",
+        "lib": ["ESNext", "DOM"],
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "module": "ESNext",
+        "jsxFactory": "MyVue.createElement",
+        "jsxFragmentFactory": "MyVue.Fragment",
+        "jsx": "react"
+    },
+    "exclude": ["node_modules"],
+    "include": ["."]
+}

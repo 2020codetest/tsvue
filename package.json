@@ -1,0 +1,29 @@
+{
+  "name": "tsvue",
+  "version": "1.0.0",
+  "description": "toy vue by typescript",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "debug": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2020codetest/tsvue.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/2020codetest/tsvue/issues"
+  },
+  "homepage": "https://github.com/2020codetest/tsvue#readme",
+  "devDependencies": {
+    "css-loader": "^4.3.0",
+    "style-loader": "^1.3.0",
+    "ts-loader": "^8.0.4",
+    "typescript": "^4.0.3",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  }
+}
