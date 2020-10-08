@@ -146,8 +146,14 @@ export class ElementWrapper implements Component{
     update(newComp: Component): void{
         if (newComp.type !== this.type){
             // different type, just flush the whole tree
+            this.unmount()
+            for (let child of this.children){
+                child.unmount()
+            }
+
             this.parent.removeChild(this.node)
             this.node = newComp.flush(this.parent)
+            this.children = newComp.children;
         }
         else{
             this.releaseEvents()
@@ -163,6 +169,7 @@ export class ElementWrapper implements Component{
             // if there are more children in original comp, just remove them
             if (this.children.length > minLength){
                 for (let inx = minLength; inx < this.children.length; ++inx){
+                    this.children[inx].unmount()
                     this.node.removeChild(this.children[inx].node)
                 }
 
